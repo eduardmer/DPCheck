@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
 import com.dpcheck.databinding.ActivityMainBinding
 import com.google.gson.GsonBuilder
@@ -25,23 +27,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var retrofit : Retrofit
     var searchClicked:Boolean = true
 
-    private lateinit var binding: ActivityMainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        val binding= DataBindingUtil.setContentView<ActivityMainBinding>(this,R.layout.activity_main)
+        binding.viewModel=ViewModel()
         supportActionBar?.hide()
-
-        searchClicked=true
-
-        val gson=GsonBuilder().setLenient().create()
-
         retrofit=Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(GsonConverterFactory.create())
             .baseUrl("https://www.instagram.com/")
             .build()
+        //binding = ActivityMainBinding.inflate(layoutInflater)
+        //val view = binding.root
+        //setContentView(view)
+
+        searchClicked=true
     }
 
     /*fun init(){
@@ -54,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         searchClicked=true
     }*/
 
-    fun buttonClicked(view : View){
+    /*fun buttonClicked(view : View){
         when(view){
             binding.searchButton -> {
                 if(!binding.usernameText.text.toString().trim().equals("") && searchClicked)
@@ -69,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         val call = retrofit.create(InstagramInterface::class.java).getUser(binding.usernameText.text.toString().trim())
         call.enqueue(object : Callback<DataModel> {
             override fun onResponse(call: Call<DataModel>, response: Response<DataModel>) {
+                searchClicked=true
                 if (response.isSuccessful) {
                     val dataModel=response.body()
 
@@ -90,10 +90,10 @@ class MainActivity : AppCompatActivity() {
                     binding.followingView.setText("${dataModel?.graphql?.user?.edge_follow?.count}")
                     binding.followingView.visibility=View.VISIBLE
                 }
-                else
-                    Toast.makeText(this@MainActivity,"Error!",Toast.LENGTH_SHORT).show()
-
-                searchClicked=true
+                else {
+                    Toast.makeText(this@MainActivity, "Error!", Toast.LENGTH_SHORT).show()
+                    Log.i("pergjigja",response.toString())
+                }
             }
 
             override fun onFailure(call: Call<DataModel>, t: Throwable) {
@@ -102,5 +102,5 @@ class MainActivity : AppCompatActivity() {
                 searchClicked=true
             }
         })
-    }
+    }*/
 }
