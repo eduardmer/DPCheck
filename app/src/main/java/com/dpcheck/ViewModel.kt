@@ -1,6 +1,7 @@
 package com.dpcheck
 
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
@@ -11,7 +12,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 
-class ViewModel(val retrofit: Retrofit) : BaseObservable() {
+class ViewModel(private val retrofit: Retrofit) : BaseObservable() {
 
     @get:Bindable
     var data:DataModel?=null
@@ -44,7 +45,6 @@ class ViewModel(val retrofit: Retrofit) : BaseObservable() {
     fun onClick(){
         if(username.trim() != "")
             getUserData()
-
     }
 
     companion object{

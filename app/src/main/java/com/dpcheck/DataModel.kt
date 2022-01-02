@@ -9,15 +9,15 @@ class DataModel {
             get() = field
 
         class User{
-            var biography:String?=null
+            var biography=""
                 get() = field
             var edge_followed_by:Followers?=null
                 get()=field
             var edge_follow:Following?=null
                 get()=field
-            var full_name:String?=null
+            var full_name=""
                 get()=field
-            var profile_pic_url_hd:String?=null
+            var profile_pic_url_hd=""
                 get()=field
 
             class Followers{
