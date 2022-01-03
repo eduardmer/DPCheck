@@ -1,7 +1,5 @@
 package com.dpcheck
 
-import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
@@ -63,17 +61,14 @@ class ViewModel(private val retrofit: Retrofit) : BaseObservable() {
                 if (response.isSuccessful) {
                     data=response.body()
                     imageUrl= data?.graphql?.user?.profile_pic_url_hd.toString()
-                    Log.i("pergjigja",response.body().toString())
                 }
                 else {
                     toastMessage=response.toString()
-                    Log.i("pergjigja",response.toString())
                 }
             }
 
             override fun onFailure(call: Call<DataModel>, t: Throwable) {
                 toastMessage=t.toString()
-                Log.i("pergjigjaError",t.toString())
             }
         })
     }
