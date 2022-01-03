@@ -63,7 +63,10 @@ class ViewModel(private val retrofit: Retrofit) : BaseObservable() {
                     imageUrl= data?.graphql?.user?.profile_pic_url_hd.toString()
                 }
                 else {
-                    toastMessage=response.toString()
+                    if(response.code()==404)
+                        toastMessage="No user found"
+                    else
+                        toastMessage=response.toString()
                 }
             }
 
