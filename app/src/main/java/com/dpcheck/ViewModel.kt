@@ -1,5 +1,10 @@
 package com.dpcheck
 
+import android.app.DownloadManager
+import android.app.Service
+import android.net.Uri
+import android.os.Environment
+import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
@@ -9,6 +14,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ViewModel(private val retrofit: Retrofit) : BaseObservable() {
 
@@ -49,7 +56,7 @@ class ViewModel(private val retrofit: Retrofit) : BaseObservable() {
         @BindingAdapter("loadImage")
         @JvmStatic
         fun loadImage(imageView:ImageView,imageUrl:String){
-            if(imageUrl!="")
+            if(imageUrl.length>0)
                 Glide.with(imageView.context).load(imageUrl).into(imageView)
         }
     }
@@ -63,10 +70,10 @@ class ViewModel(private val retrofit: Retrofit) : BaseObservable() {
                     imageUrl= data?.graphql?.user?.profile_pic_url_hd.toString()
                 }
                 else {
-                    if(response.code()==404)
-                        toastMessage="No user found"
+                    toastMessage = if(response.code()==404)
+                        "No user found"
                     else
-                        toastMessage=response.toString()
+                        response.toString()
                 }
             }
 
@@ -74,6 +81,19 @@ class ViewModel(private val retrofit: Retrofit) : BaseObservable() {
                 toastMessage=t.toString()
             }
         })
+    }
+
+    fun downloadImage(view:View){
+        if(imageUrl.length==0)
+            return
+        val imageUri=Uri.parse(imageUrl)
+        val downloadRequest=DownloadManager.Request(imageUri)
+            .setTitle("Image downloaded")
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,SimpleDateFormat("ddMMyyyy_hhmmss",Locale.getDefault()).format(Date())+".png")
+            .setAllowedOverMetered(true)
+        val downloadManager=view.context.getSystemService(Service.DOWNLOAD_SERVICE) as DownloadManager
+        downloadManager.enqueue(downloadRequest)
     }
 
 }
